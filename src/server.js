@@ -8,39 +8,31 @@ const pathToIndex = path.join(__dirname, 'pages', 'index.html');
 const pathToAbout = path.join(__dirname, 'pages', 'about.html');
 const pathTo404 = path.join(__dirname, 'pages', '404.html');
 
+function text(pathToSomewhere, writeHeadContent, res){
+  fs.readFile(pathToSomewhere).then(data => {
+    res.setHeader('Content-Type', 'text/html');
+    res.writeHead(writeHeadContent);
+    res.end(data);
+    })
+}
+
 const showWebpage = function (req, res) {
 switch(req.url){
 
   case "/about":
-  fs.readFile(pathToAbout).then(data => {
-  res.setHeader('Content-Type', 'text/html');
-  res.writeHead(200);
-  res.end(data);
-  })
+  text(pathToAbout, 200, res);
   break;
 
   case "/":
-  fs.readFile(pathToIndex).then(data => {
-  res.setHeader('Content-Type', 'text/html');
-  res.writeHead(200);
-  res.end(data);
-})
+  text(pathToIndex, 200 , res);
   break;
 
   case "/home":
-  fs.readFile(pathToIndex).then(data => {
-  res.setHeader('Content-Type', 'text/html');
-  res.writeHead(200);
-  res.end(data);
-})
+  text(pathToIndex, 200, res);
   break;
 
   default:
-  fs.readFile(pathTo404).then(data => {
-  res.setHeader('Content-Type', 'text/html');
-  res.writeHead(404);
-  res.end(data);
-})
+  text(pathTo404, 404, res);
 }
 }
 
