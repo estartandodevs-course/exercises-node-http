@@ -1,10 +1,44 @@
-/*
+const http = require('http')
+const path = require('path')
+const fs = require('fs')
 
-  - TODO 1: Criar um servidor que recebe requisições HTTP na porta 8000 e responde com o conteúdo de um arquivo HTML.
-  - TODO 2: Se for acessada a URL http://localhost:8000/about deve mostrar o conteúdo da pagina `pages/about.html`
-  - TODO 3: Se for acessada a URL http://localhost:8000/ ou http://localhost:8000/home deve mostrar o conteúdo da pagina `pages/index.html`
-  - TODO 4: Se for acessada qualquer outro caminho deve mostrar o conteúdo da pagina `pages/404.html`
- 
+const host = ("localhost")
+const port = process.env.PORT || 8000
 
-  OBS: Deve ser utilizado apenas os módulos nativos do NODE (http, path, fs, etc), nada de instalar outras libs ( ˘︹˘ )
-*/
+const getHtmlFile = (fileName) => fs.readFileSync(path.join(__dirname, 'pages', fileName))
+
+const pageHtmlAbout = getHtmlFile('about.html')
+const pageHtmlIndex = getHtmlFile('index.html')
+const pageHtml404 = getHtmlFile('404.html')
+
+const requestListener = function (request, response) {
+  response.setHeader('Content-Type', 'text/html')
+
+  switch (request.url) {
+    case ("/about"):
+      response.writeHead(200)
+      response.end(pageHtmlAbout)
+      break
+
+    case ("/home"):
+      response.writeHead(200)
+      response.end(pageHtmlIndex)
+      break
+
+    case ("/"):
+      response.writeHead(200)
+      response.end(pageHtmlIndex)
+      break
+
+    default:
+      response.writeHead(404)
+      response.end(pageHtml404)
+      break
+  }
+}
+
+const server = http.createServer(requestListener)
+
+server.listen(port, host, () => {
+  console.log(`Server is running on http://${host}:${port}`)
+})
